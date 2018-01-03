@@ -1,18 +1,16 @@
 package com.example.myvideoplayer;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.EditText;
+import android.support.v7.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements ChoiceVideoURIFragment.OnChoiceVideoURIListener
 {
-
-	private static final int REQUEST_TAKE_GALLERY_VIDEO = 100;
+	private FragmentManager mFragmentManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -20,67 +18,41 @@ public class MainActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		findViewById(R.id.btn_play).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-				EditText editText = (EditText) findViewById(R.id.et_uri);
-				playVideo(editText.getText().toString());
-			}
-		});
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 
-		findViewById(R.id.btn_video_file).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(final View v)
-			{
-				Intent intent = new Intent();
-				intent.setType("video/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
-			}
-		});
+		mFragmentManager = getSupportFragmentManager();
+		showFragment(ChoiceVideoURIFragment.newInstance());
 	}
 
-
-	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	@Override
+	public void onChoiceVideoURI(final String uri)
 	{
-		if (resultCode == RESULT_OK)
-		{
-			if (requestCode == REQUEST_TAKE_GALLERY_VIDEO)
-			{
-				Uri selectedVideoUri = data.getData();
-
-				playVideo(selectedVideoUri.toString()+"");
-			}
-		}
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		showFragment(VideoPlayerFragment.newInstance(uri));
 	}
 
-	// UPDATED!
-	public String getPath(Uri uri)
+	@Override
+	public void onBackPressed()
 	{
-		String[] projection = {MediaStore.Video.Media.DATA};
-		Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-		if (cursor != null)
+		if (mFragmentManager.getBackStackEntryCount() == 1)
 		{
-			// HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-			// THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-			int column_index = cursor
-					.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-			cursor.moveToFirst();
-			return cursor.getString(column_index);
+			finish();
+			return;
 		}
-		else
+
+		if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 		{
-			return null;
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
+		super.onBackPressed();
 	}
 
-	private void playVideo(String uri)
+	private void showFragment(Fragment fragment)
 	{
-		Intent intent = new Intent(this, VideoPlayerActivity.class);
-		intent.putExtra("uri", uri);
-		startActivity(intent);
+		FragmentTransaction ft = mFragmentManager.beginTransaction();
+		ft.replace(R.id.fl_container, fragment);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 }

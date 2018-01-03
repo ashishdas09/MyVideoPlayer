@@ -3,40 +3,49 @@
 
     <declare-styleable name="MyVideoPlayer">
 
-        <attr name="vp_source" format="string" />
+        <attr name="vp_source" format="string"/>
 
         <attr name="vp_leftAction" format="enum">
-            <enum name="none" value="0" />
-            <enum name="restart" value="1" />
-            <enum name="retry" value="2" />
+            <enum name="none" value="0"/>
+            <enum name="restart" value="1"/>
+            <enum name="retry" value="2"/>
         </attr>
 
         <attr name="vp_rightAction" format="enum">
-            <enum name="none" value="3" />
-            <enum name="submit" value="4" />
-            <enum name="customLabel" value="5" />
+            <enum name="none" value="3"/>
+            <enum name="submit" value="4"/>
+            <enum name="customLabel" value="5"/>
         </attr>
 
-        <attr name="vp_customLabelText" format="string" />
-        <attr name="vp_retryText" format="string" />
-        <attr name="vp_submitText" format="string" />
-        <attr name="vp_bottomText" format="string" />
+        <attr name="vp_customLabelText" format="string"/>
+        <attr name="vp_retryText" format="string"/>
+        <attr name="vp_submitText" format="string"/>
+        <attr name="vp_bottomText" format="string"/>
 
-        <attr name="vp_restartDrawable" format="reference" />
-        <attr name="vp_playDrawable" format="reference" />
-        <attr name="vp_pauseDrawable" format="reference" />
+        <attr name="vp_restartDrawable" format="reference"/>
+        <attr name="vp_playDrawable" format="reference"/>
+        <attr name="vp_pauseDrawable" format="reference"/>
 
-        <attr name="vp_hideControlsOnPlay" format="boolean" />
-        <attr name="vp_autoPlay" format="boolean" />
+        <attr name="vp_hideControlsOnPlay" format="boolean"/>
+        <attr name="vp_autoPlay" format="boolean"/>
 
-        <attr name="vp_disableControls" format="boolean" />
+        <attr name="vp_disableControls" format="boolean"/>
 
-        <attr name="vp_themeColor" format="color" />
+        <attr name="vp_themeColor" format="color"/>
 
-        <attr name="vp_autoFullscreen" format="boolean" />
+        <attr name="vp_autoFullscreen" format="boolean"/>
 
-        <attr name="vp_loop" format="boolean" />
+        <attr name="vp_loop" format="boolean"/>
 
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference"/>
+        <attr name="metaButtonBarButtonStyle" format="reference"/>
     </declare-styleable>
 
 </resources>

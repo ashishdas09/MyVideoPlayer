@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">MyVideoPlayer</string>
-
-    <string name="vp_retry">RETRY</string>
-
 </resources>

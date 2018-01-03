@@ -54,7 +54,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class MyVideoPlayer extends FrameLayout
-		implements IUserMethods,
+		implements IPublicMethods,
 		           TextureView.SurfaceTextureListener,
 		           MediaPlayer.OnPreparedListener,
 		           MediaPlayer.OnBufferingUpdateListener,
@@ -130,8 +130,8 @@ public class MyVideoPlayer extends FrameLayout
 	private Handler mHandler;
 
 	private Uri mSource;
-	private MyVideoPlayerListener mCallback;
-	private MyVideoProgressListener mProgressCallback;
+	private MyVideoPlayerListener mPlayerListener;
+	private MyVideoProgressListener mProgressListener;
 	@LeftAction
 	private int mLeftAction = LEFT_ACTION_RESTART;
 	@RightAction
@@ -173,9 +173,9 @@ public class MyVideoPlayer extends FrameLayout
 					mSeeker.setProgress(pos);
 					mSeeker.setMax(dur);
 
-					if (mProgressCallback != null)
+					if (mProgressListener != null)
 					{
-						mProgressCallback.onVideoProgressUpdate(pos, dur);
+						mProgressListener.onVideoProgressUpdate(pos, dur);
 					}
 					if (mHandler != null)
 					{
@@ -259,22 +259,17 @@ public class MyVideoPlayer extends FrameLayout
 			mLoop = false;
 		}
 
-		if (mRetryText == null)
-		{
-			mRetryText = context.getResources().getText(R.string.vp_retry);
-		}
-
 		if (mRestartDrawable == null)
 		{
-			mRestartDrawable = AppCompatResources.getDrawable(context, R.drawable.vp_action_restart);
+			mRestartDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_vp_replay_white);
 		}
 		if (mPlayDrawable == null)
 		{
-			mPlayDrawable = AppCompatResources.getDrawable(context, R.drawable.vp_action_play);
+			mPlayDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_vp_play_white);
 		}
 		if (mPauseDrawable == null)
 		{
-			mPauseDrawable = AppCompatResources.getDrawable(context, R.drawable.vp_action_pause);
+			mPauseDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_vp_pause_white);
 		}
 	}
 
@@ -301,15 +296,15 @@ public class MyVideoPlayer extends FrameLayout
 	}
 
 	@Override
-	public void setCallback(@NonNull MyVideoPlayerListener callback)
+	public void setPlayerListener(@NonNull MyVideoPlayerListener playerListener)
 	{
-		mCallback = callback;
+		mPlayerListener = playerListener;
 	}
 
 	@Override
-	public void setProgressCallback(@NonNull MyVideoProgressListener callback)
+	public void setProgressListener(@NonNull MyVideoProgressListener callback)
 	{
-		mProgressCallback = callback;
+		mProgressListener = callback;
 	}
 
 	@Override
@@ -477,9 +472,9 @@ public class MyVideoPlayer extends FrameLayout
 		mSeeker.setProgress(0);
 		mSeeker.setEnabled(false);
 		mPlayer.reset();
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onPreparing(this);
+			mPlayerListener.onPreparing(this);
 		}
 		try
 		{
@@ -533,9 +528,9 @@ public class MyVideoPlayer extends FrameLayout
 		{
 			return;
 		}
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onPreparing(this);
+			mPlayerListener.onPreparing(this);
 		}
 		try
 		{
@@ -593,6 +588,8 @@ public class MyVideoPlayer extends FrameLayout
 								{
 									setFullscreen(false);
 								}
+
+								notifyControlVisibility(true);
 							}
 						})
 				.start();
@@ -624,6 +621,8 @@ public class MyVideoPlayer extends FrameLayout
 								{
 									mControlsFrame.setVisibility(View.INVISIBLE);
 								}
+
+								notifyControlVisibility(false);
 							}
 						})
 				.start();
@@ -680,6 +679,7 @@ public class MyVideoPlayer extends FrameLayout
 		mControlsFrame.setVisibility(View.GONE);
 		mClickFrame.setOnClickListener(null);
 		mClickFrame.setClickable(false);
+		notifyControlVisibility(false);
 	}
 
 	@CheckResult
@@ -726,9 +726,9 @@ public class MyVideoPlayer extends FrameLayout
 			return;
 		}
 		mPlayer.start();
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onStarted(this);
+			mPlayerListener.onStarted(this);
 		}
 		if (mHandler == null)
 		{
@@ -768,9 +768,9 @@ public class MyVideoPlayer extends FrameLayout
 			return;
 		}
 		mPlayer.pause();
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onPaused(this);
+			mPlayerListener.onPaused(this);
 		}
 		if (mHandler == null)
 		{
@@ -905,9 +905,9 @@ public class MyVideoPlayer extends FrameLayout
 		LOG("onPrepared()");
 		mProgressFrame.setVisibility(View.INVISIBLE);
 		mIsPrepared = true;
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onPrepared(this);
+			mPlayerListener.onPrepared(this);
 		}
 		mLabelPosition.setText(Util.getDurationString(0, false));
 		mLabelDuration.setText(Util.getDurationString(mediaPlayer.getDuration(), false));
@@ -940,9 +940,9 @@ public class MyVideoPlayer extends FrameLayout
 	public void onBufferingUpdate(MediaPlayer mediaPlayer, int percent)
 	{
 		LOG("Buffering: %d%%", percent);
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onBuffering(percent);
+			mPlayerListener.onBuffering(percent);
 		}
 		if (mSeeker != null)
 		{
@@ -971,12 +971,12 @@ public class MyVideoPlayer extends FrameLayout
 			mSeeker.setProgress(mSeeker.getMax());
 			showControls();
 		}
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onCompletion(this);
+			mPlayerListener.onCompletion(this);
 			if (mLoop)
 			{
-				mCallback.onStarted(this);
+				mPlayerListener.onStarted(this);
 			}
 		}
 	}
@@ -1088,6 +1088,7 @@ public class MyVideoPlayer extends FrameLayout
 		{
 			mClickFrame.setOnClickListener(null);
 			mControlsFrame.setVisibility(View.GONE);
+			notifyControlVisibility(false);
 		}
 		else
 		{
@@ -1098,7 +1099,7 @@ public class MyVideoPlayer extends FrameLayout
 						public void onClick(View view)
 						{
 							toggleControls();
-							mCallback.onClickVideoFrame(myVideoPlayer);
+							mPlayerListener.onClickVideoFrame(myVideoPlayer);
 						}
 					});
 		}
@@ -1170,16 +1171,16 @@ public class MyVideoPlayer extends FrameLayout
 		}
 		else if (view.getId() == R.id.btnRetry)
 		{
-			if (mCallback != null)
+			if (mPlayerListener != null)
 			{
-				mCallback.onRetry(this, mSource);
+				mPlayerListener.onRetry(this, mSource);
 			}
 		}
 		else if (view.getId() == R.id.btnSubmit)
 		{
-			if (mCallback != null)
+			if (mPlayerListener != null)
 			{
-				mCallback.onSubmit(this, mSource);
+				mPlayerListener.onSubmit(this, mSource);
 			}
 		}
 	}
@@ -1318,9 +1319,9 @@ public class MyVideoPlayer extends FrameLayout
 
 	private void throwError(Exception e)
 	{
-		if (mCallback != null)
+		if (mPlayerListener != null)
 		{
-			mCallback.onError(this, e);
+			mPlayerListener.onError(this, e);
 		}
 		else
 		{
@@ -1432,6 +1433,14 @@ public class MyVideoPlayer extends FrameLayout
 
 				mClickFrame.setSystemUiVisibility(flags);
 			}
+		}
+	}
+
+	private void notifyControlVisibility(boolean visible)
+	{
+		if(mPlayerListener != null)
+		{
+			mPlayerListener.onControlVisibility(visible);
 		}
 	}
 }

@@ -55,7 +55,7 @@
         android:background="?selectableItemBackground"
         android:paddingLeft="@dimen/vp_button_size"
         android:paddingRight="@dimen/vp_button_size"
-        app:srcCompat="@drawable/vp_action_restart"
+        app:srcCompat="@drawable/ic_vp_replay_white"
         tools:ignore="ContentDescription"/>
 
     <TextView
@@ -70,7 +70,7 @@
         android:minHeight="@dimen/vp_button_size"
         android:paddingLeft="@dimen/vp_content_inset"
         android:paddingRight="@dimen/vp_content_inset"
-        android:text="@string/vp_retry"
+        android:text=""
         android:textAllCaps="false"
         android:textColor="#fff"
         android:textSize="@dimen/vp_text_size_medium"
@@ -83,7 +83,7 @@
         android:layout_below="@+id/position"
         android:layout_centerHorizontal="true"
         android:background="?selectableItemBackground"
-        app:srcCompat="@drawable/vp_action_play"
+        app:srcCompat="@drawable/ic_vp_play_white"
         tools:ignore="ContentDescription"/>
 
     <TextView

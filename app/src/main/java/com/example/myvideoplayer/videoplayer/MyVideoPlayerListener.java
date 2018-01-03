@@ -23,4 +23,6 @@ public interface MyVideoPlayerListener
 	void onSubmit(MyVideoPlayer player, Uri source);
 
 	void onClickVideoFrame(MyVideoPlayer player);
+
+	void onControlVisibility(boolean visible);
 }

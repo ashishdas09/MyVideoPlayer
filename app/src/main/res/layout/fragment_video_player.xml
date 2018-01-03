@@ -1,0 +1,24 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.myvideoplayer.videoplayer.MyVideoPlayer
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:vp_autoFullscreen="true"
+        app:vp_autoPlay="true"
+        app:vp_customLabelText="Hello!"
+        app:vp_disableControls="false"
+        app:vp_hideControlsOnPlay="true"
+        app:vp_leftAction="restart"
+        app:vp_pauseDrawable="@drawable/ic_vp_pause_white"
+        app:vp_playDrawable="@drawable/ic_vp_play_white"
+        app:vp_restartDrawable="@drawable/ic_vp_replay_white"
+        app:vp_retryText=""
+        app:vp_source=""
+        app:vp_submitText=""/>
+
+</FrameLayout>

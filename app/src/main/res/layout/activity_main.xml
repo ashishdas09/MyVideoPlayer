@@ -6,40 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:background="#99000000"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:background="@color/colorPrimary"
+        android:elevation="2dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
-        <EditText
-            android:id="@+id/et_uri"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:hint="Enter video uri"
-            android:minHeight="78dp"
-            android:padding="8dp"
-            android:text="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-            android:textColor="#fff"/>
-
-        <Button
-            android:id="@+id/btn_play"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            android:text="Play"/>
-
-        <Button
-            android:id="@+id/btn_video_file"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="8dp"
-            android:background="#88ff0000"
-            android:text="Video from gallery"/>
-
-    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/fl_container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
